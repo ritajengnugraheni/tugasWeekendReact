@@ -8,13 +8,31 @@ class Auth extends React.Component {
     username: "",
     password: "",
     selectedFile: null,
+    formUser: {
+      username:"",
+      password:""
+    },
+    loginState:{
+      username:"",
+      password:"",
+      profilePicture:""
+    }
   };
 
-  inputHandler = (event, key) => {
-    const { value } = event.target;
+  // inputHandler = (event, key) => {
+  //   const { value } = event.target;
 
+  //   this.setState({
+  //     [key]: value,
+  //   });
+  // };
+
+  inputHandler = (e, key) => {
+    const { value } = e.target;
     this.setState({
-      [key]: value,
+      formUser: {
+        ...this.state.formUser,[key]: value 
+      } 
     });
   };
 
@@ -32,26 +50,45 @@ class Auth extends React.Component {
       });
   };
 
+  // loginHandler = () => {
+  //   alert("Login!");
+  //   Axios.get(`${API_URL}/users/login`, {
+  //     params: {
+  //       username: this.state.username,
+  //       password: this.state.password,
+  //     },
+  //   })
+  //     .then((res) => {
+  //       console.log(res.data);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+    
+    
+  // };
+
+  // kalau login cari username yang sudah ada 
+  // ini periksa lagi juga
   loginHandler = () => {
     alert("Login!");
-    Axios.get(`${API_URL}/users/login`, {
-      params: {
-        username: this.state.username,
-        password: this.state.password,
-      },
-    })
+    Axios.post(`${API_URL}/documents/login`, this.state.formUser)
       .then((res) => {
         console.log(res.data);
+        this.setState({loginState : res.data})
       })
       .catch((err) => {
         console.log(err);
       });
+    
+    
   };
 
   fileChangeHandler = (e) => {
     this.setState({ selectedFile: e.target.files[0] });
   };
 
+  // perikasa lg nih 
   fileUploadHandler = () => {
     let formData = new FormData();
 
@@ -60,6 +97,7 @@ class Auth extends React.Component {
       this.state.selectedFile,
       this.state.selectedFile.name
     );
+    formData.append("userData", JSON.stringify(this.state.formUser));
 
     Axios.post(`${API_URL}/documents`, formData)
       .then((res) => {
@@ -69,6 +107,10 @@ class Auth extends React.Component {
         console.log("ERROR");
         console.log(err);
       });
+
+    console.log(this.state.formUser);
+    console.log(JSON.stringify(this.state.formUser));
+      
   };
 
   download = () => {
@@ -81,7 +123,7 @@ class Auth extends React.Component {
         <h1>Auth Screen</h1>
 
         <h5>Username</h5>
-        <input type="text" onChange={(e) => this.inputHandler(e, "username")} />
+        <input type="text" onChange={(e) => this.inputHandler(e,"username")} />
         <h5>Password</h5>
         <input type="text" onChange={(e) => this.inputHandler(e, "password")} />
 
@@ -94,6 +136,11 @@ class Auth extends React.Component {
         <input type="button" value="Upload" onClick={this.fileUploadHandler} />
         <br />
         <input type="button" value="Download" onClick={this.download} />
+      <hr/>
+      <h2>
+        {this.state.loginState.username}
+      </h2>
+        <img src={this.state.loginState.profilePicture} alt=""/>
       </div>
     );
   }

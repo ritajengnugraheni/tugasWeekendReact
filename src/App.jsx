@@ -3,6 +3,8 @@ import logo from "./logo.svg";
 import "./App.css";
 import Axios from "axios";
 import Auth from "./Auth";
+import Tugas from "./Tugas"
+import "bootstrap/dist/css/bootstrap.css";
 
 const API_URL = `http://localhost:8080`;
 
@@ -54,7 +56,8 @@ const App = () => {
       {data.map((val) => {
         return <p>{val.productName}</p>;
       })} */}
-      <Auth />
+      {/* <Auth /> */}
+      <Tugas/>
     </div>
   );
 };
